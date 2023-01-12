@@ -39,9 +39,9 @@ void loop() {
   // Get MPU sensor data
   motion.Main();
 
-  db[YAW] = motion.ypr[0];
-  db[PITCH] = motion.ypr[1];
-  db[ROLL] = motion.ypr[2];
+  db[YAW] = motion.ypr[0]*10;
+  db[PITCH] = motion.ypr[1]*10;
+  db[ROLL] = motion.ypr[2]*10;
 
   // Set setpoint based on mode
   switch (mode){
@@ -78,12 +78,12 @@ void loop() {
     Firmata.processInput();
   }
 
-  Serial.print(db[1]);
-  Serial.print("\t");
-  Serial.print(db[2]);
-  Serial.print("\t");
-  Serial.print(db[3]);
-  Serial.println("\t");
+  for (byte i = 0; i < 12; i++){
+    Serial.print(db[i]);
+    Serial.print("\t");
+  }
+  
+  Serial.println();
 
   // Firmata.sendAnalog(yaw, motion.ypr[0])
 }
