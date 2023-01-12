@@ -1,11 +1,6 @@
 #include "Motors.h"
 
 
-int propVal = 100;
-String readstring = "";
-bool motorOn = false;
-bool reset = false;
-
 bool Motors::Init()
 {
     int motorPins[] = {M1_PIN, M2_PIN, M3_PIN, M4_PIN};
@@ -38,34 +33,4 @@ void Motors::Main()
     for (int i = 0; i < 4; i++){
       propellers[i].Main();
     }
-}
-
-void Motors::Test()
-{
-    reset = false;
-     while (Serial.available()) {
-        delay(2);  //delay to allow byte to arrive in input buffer
-        readstring = Serial.readStringUntil('\n');
-    }
-    if (readstring == "r") { reset = true; motorOn = false;}
-    if (readstring == "on"){ motorOn = true; }
-    if (readstring == "off"){ motorOn = false;}
-
-    if (motorOn){
-      propVal++;
-    }
-    
-    if (reset){
-      propVal = 0;
-      Serial.println("resetted");
-    }
-
-    readstring = "";
-
-    for (int i = 0; i<PROPS; i++)
-      {
-        propellers[i].value = propVal;
-        propellers[i].Main();
-      }
-      Serial.println(propVal);
 }

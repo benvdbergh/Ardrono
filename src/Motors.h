@@ -13,6 +13,4 @@ class Motors
         float outputsRead[4];
         bool Init();
         void Main();
-        void Test();
-
 };
