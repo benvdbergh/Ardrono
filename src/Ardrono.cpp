@@ -1,10 +1,11 @@
 #include <Arduino.h>
-#include <Firmata.h>
 
 #include "Motion.h"
 #include "Motors.h"
 #include "Controller.h"
+#include "Host.h"
 
+Host host;
 Motion motion;
 Controller controller;
 Motors motors;
@@ -13,17 +14,14 @@ byte mode;
 float setpoint[3] = {0, 0, 0}; //[yaw pitch roll]
 float db[12] = {};
 
-void analogReadCallback(byte tpc, int value){
-  db[tpc] = value;
-}
-
-
 void setup() {
-  Firmata.setFirmwareVersion(FIRMATA_MAJOR_VERSION, FIRMATA_MINOR_VERSION);
-  Firmata.attach(ANALOG_MESSAGE, analogReadCallback);
-  Firmata.begin(57600);
+  // Firmata.setFirmwareVersion(FIRMATA_MAJOR_VERSION, FIRMATA_MINOR_VERSION);
+  // Firmata.attach(ANALOG_MESSAGE, analogReadCallback);
+  // Firmata.attach(SET_PIN_MODE, setPinModeCallback);
+  // Firmata.attach(START_SYSEX, sysexCallback);
+  // Firmata.begin(57600);
 
-
+  host.Init();
   motors.Init();
   motion.Init();
   float pids[9];
@@ -31,10 +29,7 @@ void setup() {
 }
 
 void loop() {
-  // Read Host data
-  while (Firmata.available()) {
-    Firmata.processInput();
-  }
+  host.Main();
 
   // Get MPU sensor data
   motion.Main();
@@ -73,17 +68,19 @@ void loop() {
   // Write motorvalues to ESC's
   motors.Main();
 
-  // Receive and send new debug info from/to host
-  while (Firmata.available()) {
-    Firmata.processInput();
-  }
+  // // Receive and send new debug info from/to host
+  // while (Firmata.available()) {
+  //   Firmata.processInput();
+  // }
 
-  for (byte i = 0; i < 12; i++){
-    Serial.print(db[i]);
-    Serial.print("\t");
-  }
+  // for (byte i = 0; i < 12; i++){
+  //   // Serial.print(db[i]);
+  //   // Serial.print("\t");
+
+  //   // if (IS_PIN_ANALOG(i)) {
+  //     Firmata.sendAnalog(i, db[i]);
+  //   // }
+  // }
   
-  Serial.println();
-
-  // Firmata.sendAnalog(yaw, motion.ypr[0])
+  //Serial.println();
 }
